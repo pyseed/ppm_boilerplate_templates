@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+#
+# replace for `ppm upload`
+# rename this script from 'upload.testpypi' to 'upload'
+#   to test your release on testpypi repo versus production pypi
+# rename it again to 'upload' to push your package to production pypi
+#
+
+set -e
+
+export $(cat .env | xargs)
+cat .env | xargs
+
+# upload to testpypi
+"${VENV}/bin/python3" -m twine upload --repository testpypi dist/*
+
+test_venv="/tmp/${PROJECT}-venv"
+echo "testing latest uploaded package in temporary virtualenv ${test_venv}..."
+python3 -m venv "${test_venv}"
+"${test_venv}/bin/pip3" install --index-url https://test.pypi.org/simple/ --no-deps "${PROJECT}"
+"${test_venv}/bin/python3" -c "import ${PROJECT}; print(${PROJECT})"
+rm -r "${test_venv}"

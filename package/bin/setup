@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+venv="$(pwd)/venv"
+
+ppmInvokeDefaultScript setup
+# add your setup additions here
